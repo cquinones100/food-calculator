@@ -45,13 +45,21 @@ function App() {
     form.reset();
   }
 
+  function handleDeleteFood(index: number) {
+    if (!foods) return;
+
+    const updatedFoods = foods.filter((_, i) => i !== index);
+    setFoods(updatedFoods);
+    localStorage.setItem('foods', JSON.stringify(updatedFoods));
+  }
+
   return (
     <div className="flex flex-col items-center p-4 w-full gap-2">
       <h1 className="text-2xl font-bold mb-4">Food Calculator</h1>
       <TotalPerServing foods={foods || []} />
       {
         foods && foods.length > 0 ? (
-          <FoodItems foods={foods} resetFoods={resetFoods} />
+          <FoodItems foods={foods} resetFoods={resetFoods} deleteFood={handleDeleteFood} />
         ) : (
           <p className="mb-4">No foods added yet.</p>
         )
