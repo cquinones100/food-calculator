@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import './App.css'
 import type { Food } from './food_items';
 import FoodItems from './food_items';
+import TotalPerServing from './total_per_serving';
 
 function App() {
   const [foods, setFoods] = React.useState<Food[]>();
-  const [numServings, setNumServings] = React.useState<number>();
 
   useEffect(() => {
     if (!foods) {
@@ -48,6 +48,7 @@ function App() {
   return (
     <div className="flex flex-col items-center p-4 w-full gap-2">
       <h1 className="text-2xl font-bold mb-4">Food Calculator</h1>
+      <TotalPerServing foods={foods || []} />
       {
         foods && foods.length > 0 ? (
           <FoodItems foods={foods} resetFoods={resetFoods} />
@@ -55,18 +56,6 @@ function App() {
           <p className="mb-4">No foods added yet.</p>
         )
       }
-      <div className="flex flex-col items-center gap-3 w-full">
-        <label htmlFor="num-servings" className="sr-only">Number of Servings:</label>
-        <input
-          className="border p-2 rounded"
-          placeholder='Num servings'
-          type="number"
-          id="num-servings"
-          value={numServings}
-          onChange={(e) => setNumServings(Number(e.target.value))}
-          min="1"
-        />
-      </div>
       <form onSubmit={handleSubmit} className="flex flex-wrap justify-end gap-2">
         <label htmlFor="food-name" className="sr-only">Food Name</label>
         <input type="text" placeholder="Food Name" className="border p-2 rounded" id="food-name" />
