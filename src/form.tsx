@@ -1,5 +1,14 @@
 import type { Food } from "./food_items";
 
+function Input({ label, id, type }: { label: string; id: string; type: "text" | "number" }) {
+  return (
+    <>
+      <label htmlFor={id} className="sr-only">{label}</label>
+      <input type={type} placeholder={label} className="border p-2 rounded" id={id} />
+    </>
+  )
+}
+
 export default function Form({ onSubmit }: { onSubmit: (food: Food) => void }) {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -22,20 +31,13 @@ export default function Form({ onSubmit }: { onSubmit: (food: Food) => void }) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-wrap justify-end gap-2">
-      <label htmlFor="food-name" className="sr-only">Food Name</label>
-      <input type="text" placeholder="Food Name" className="border p-2 rounded" id="food-name" />
-      <label htmlFor="total-weight" className="sr-only">Total Weight (g)</label>
-      <input type="number" placeholder="Total Weight (g)" className="border p-2 rounded" id="total-weight" />
-      <label htmlFor="serving-size" className="sr-only">Serving Size (g)</label>
-      <input type="number" placeholder="Serving Size (g)" className="border p-2 rounded" id="serving-size" />
-      <label htmlFor="calories" className="sr-only">Calories</label>
-      <input type="number" placeholder="Calories" className="border p-2 rounded" id="calories" />
-      <label htmlFor="fat" className="sr-only">Fat (g)</label>
-      <input type="number" placeholder="Fat (g)" className="border p-2 rounded" id="fat" />
-      <label htmlFor="carbs" className="sr-only">Carbs (g)</label>
-      <input type="number" placeholder="Carbs (g)" className="border p-2 rounded" id="carbs" />
-      <label htmlFor="protein" className="sr-only">Protein (g)</label>
-      <input type="number" placeholder="Protein (g)" className="border p-2 rounded" id="protein" />
+      <Input label="Food Name" id="food-name" type="text" />
+      <Input label="Total Weight (g)" id="total-weight" type="number" />
+      <Input label="Serving Size (g)" id="serving-size" type="number" />
+      <Input label="Calories" id="calories" type="number" />
+      <Input label="Fat (g)" id="fat" type="number" />
+      <Input label="Carbs (g)" id="carbs" type="number" />
+      <Input label="Protein (g)" id="protein" type="number" />
       <input type="submit" value="Add Food" className="bg-blue-500 text-white p-2 rounded" />
     </form>
   );
