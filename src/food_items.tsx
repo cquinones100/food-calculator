@@ -1,3 +1,6 @@
+import { useContext } from "react";
+import { FoodContext } from "./food_context";
+
 export type Food = {
   name: string;
   totalWeight: number;
@@ -25,7 +28,26 @@ function FoodItem({ food, deleteFood }: { food: Food; deleteFood: () => void }) 
   );
 }
 
-export default function FoodItems({ foods, resetFoods, deleteFood }: { foods: Food[]; resetFoods: () => void; deleteFood: (index: number) => void; }) {
+export default function FoodItems() {
+  const { foods, setFoods } = useContext(FoodContext);
+
+  function resetFoods() {
+    setFoods([]);
+  }
+
+  function deleteFood(index: number) {
+    if (!foods) return;
+
+    const updatedFoods = foods.filter((_, i) => i !== index);
+    setFoods(updatedFoods);
+  }
+
+  if (!foods || foods.length === 0) {
+    return (
+      <p className="mb-4">No foods added yet.</p>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center gap-2 w-full">
       <div className="flex w-full items-end justify-end">

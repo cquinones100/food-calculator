@@ -1,8 +1,9 @@
-import React, { useMemo } from "react";
-import type { Food } from "./food_items";
+import React, { useContext, useMemo } from "react";
+import { FoodContext } from "./food_context";
 
-export default function TotalPerServing({ foods }: { foods: Food[]; }) {
+export default function TotalPerServing() {
   const [numServings, setNumServings] = React.useState<number>();
+  const { foods = [] } = useContext(FoodContext);
 
   const perServing = useMemo(() => {
     const defaultValues = { calories: 0, fat: 0, carbs: 0, protein: 0 };
