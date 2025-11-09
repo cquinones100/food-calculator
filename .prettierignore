@@ -1,0 +1,6 @@
+.git
+.github
+public
+node_modules
+README.md
+pnpm-lock.yaml

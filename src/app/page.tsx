@@ -9,12 +9,12 @@ export default function Home() {
 
   function setFoodsAndSave(foods: Food[]) {
     setFoods(foods);
-    localStorage.setItem('foods', JSON.stringify(foods));
+    localStorage.setItem("foods", JSON.stringify(foods));
   }
 
   useEffect(() => {
     if (!foods) {
-      const foodsFromStorage = localStorage.getItem('foods');
+      const foodsFromStorage = localStorage.getItem("foods");
 
       setFoodsAndSave(foodsFromStorage ? JSON.parse(foodsFromStorage) : []);
     }
@@ -27,17 +27,15 @@ export default function Home() {
   return (
     <div className="flex flex-col p-4 w-full gap-2 h-[100vh]">
       <h1 className="text-2xl font-bold mb-4">Food Calculator</h1>
-      {
-        foods && (
-          <div className="flex flex-col items-center justify-center gap-2 flex-grow">
-            <FoodContext.Provider value={{ foods, setFoods: setFoodsAndSave }}>
-              <TotalPerServing />
-              <FoodItems />
-            </FoodContext.Provider>
-            <Form onSubmit={handleFormSubmit} />
-          </div>
-        )
-      }
-    </div >
-  )
+      {foods && (
+        <div className="flex flex-col items-center justify-center gap-2 flex-grow">
+          <FoodContext.Provider value={{ foods, setFoods: setFoodsAndSave }}>
+            <TotalPerServing />
+            <FoodItems />
+          </FoodContext.Provider>
+          <Form onSubmit={handleFormSubmit} />
+        </div>
+      )}
+    </div>
+  );
 }

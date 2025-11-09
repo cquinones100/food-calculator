@@ -14,13 +14,13 @@
     "next": "16.0.1"
   },
   "devDependencies": {
-     "typescript": "^5",
-     "@types/node": "^20",
-     "@types/react": "^19",
-     "@eslint/js": "^9.36.0",
-     "@tailwindcss/postcss": "^4",
-     "tailwindcss": "^4",
-     "eslint": "^9",
-     "eslint-config-next": "16.0.1"
+    "typescript": "^5",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@eslint/js": "^9.36.0",
+    "@tailwindcss/postcss": "^4",
+    "tailwindcss": "^4",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.1"
   }
 }

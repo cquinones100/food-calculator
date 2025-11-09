@@ -6,5 +6,5 @@ export const FoodContext = createContext<{
   setFoods: (foods: Food[]) => void;
 }>({
   foods: [],
-  setFoods: () => { },
+  setFoods: () => {},
 });

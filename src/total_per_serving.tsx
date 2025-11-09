@@ -13,10 +13,14 @@ export default function TotalPerServing() {
     }
 
     return foods.reduce((acc, food) => {
-      acc.calories += (food.calories / food.servingSize) * (food.totalWeight / numServings);
-      acc.fat += (food.fat / food.servingSize) * (food.totalWeight / numServings);
-      acc.carbs += (food.carbs / food.servingSize) * (food.totalWeight / numServings);
-      acc.protein += (food.protein / food.servingSize) * (food.totalWeight / numServings);
+      acc.calories +=
+        (food.calories / food.servingSize) * (food.totalWeight / numServings);
+      acc.fat +=
+        (food.fat / food.servingSize) * (food.totalWeight / numServings);
+      acc.carbs +=
+        (food.carbs / food.servingSize) * (food.totalWeight / numServings);
+      acc.protein +=
+        (food.protein / food.servingSize) * (food.totalWeight / numServings);
 
       return acc;
     }, defaultValues);
@@ -25,25 +29,29 @@ export default function TotalPerServing() {
   return (
     <div className="flex flex-col items-center w-full">
       <div className="flex flex-col items-center gap-3 w-full">
-        <label htmlFor="num-servings" className="sr-only">Number of Servings:</label>
+        <label htmlFor="num-servings" className="sr-only">
+          Number of Servings:
+        </label>
         <input
           className="border p-2 rounded"
-          placeholder='Num servings'
+          placeholder="Num servings"
           type="number"
           id="num-servings"
           value={numServings}
           onChange={(e) => {
             if (!e.target.value) {
-              setNumServings(undefined)
-              return
+              setNumServings(undefined);
+              return;
             }
-            setNumServings(Number(e.target.value))
+            setNumServings(Number(e.target.value));
           }}
           min="1"
         />
       </div>
       <div className="border p-2 rounded w-full mt-4 gap-2">
-        <h2 className="text-lg font-bold mb-2">Total Per Serving (for {numServings} servings):</h2>
+        <h2 className="text-lg font-bold mb-2">
+          Total Per Serving (for {numServings} servings):
+        </h2>
         <div className="flex flex-col gap-1">
           <div>Calories: {perServing.calories.toFixed(2)}</div>
           <div>Fat: {perServing.fat.toFixed(2)}g</div>
