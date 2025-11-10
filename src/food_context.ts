@@ -1,10 +1,10 @@
+"use client";
+
 import { createContext } from "react";
-import type { Food } from "./food_items";
+import getFoods from "./actions/getFoods";
 
 export const FoodContext = createContext<{
-  foods: Food[];
-  setFoods: (foods: Food[]) => void;
+  foods: Awaited<ReturnType<typeof getFoods>>;
 }>({
   foods: [],
-  setFoods: () => {},
 });

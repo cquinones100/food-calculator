@@ -1,4 +1,8 @@
-import type { Food } from "./food_items";
+"use server";
+
+import { revalidatePath } from "next/cache";
+import saveFood from "./actions/saveFood";
+import { redirect } from "next/navigation";
 
 function Input({
   label,
@@ -17,35 +21,38 @@ function Input({
       <input
         type={type}
         placeholder={label}
-        className="border p-2 rounded"
+        className="border p-2 rounded max-w-[150px]"
         id={id}
+        name={id}
       />
     </>
   );
 }
 
-export default function Form({ onSubmit }: { onSubmit: (food: Food) => void }) {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const form = event.currentTarget;
+export default async function Form() {
+  async function onSubmit(formData: FormData) {
+    "use server";
 
-    const newFood: Food = {
-      name: form["food-name"].value,
-      totalWeight: Number(form["total-weight"].value),
-      servingSize: Number(form["serving-size"].value),
-      calories: Number(form["calories"].value),
-      fat: Number(form["fat"].value),
-      carbs: Number(form["carbs"].value),
-      protein: Number(form["protein"].value),
-    };
+    await saveFood({
+      name: String(formData.get("food-name"))!,
+      calories: Number(formData.get("calories")!),
+      carbs: Number(formData.get("carbs")!),
+      fat: Number(formData.get("fat")!),
+      protein: Number(formData.get("protein")!),
+      servingSize: Number(formData.get("serving-size")!),
+      totalWeight: Number(formData.get("total-weight")!),
+      date: new Date(),
+    });
 
-    onSubmit(newFood);
-
-    form.reset();
-  };
+    revalidatePath("/");
+    redirect("/");
+  }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-wrap justify-end gap-2">
+    <form
+      action={onSubmit}
+      className="flex flex-wrap gap-2 justify-center align-middle"
+    >
       <Input label="Food Name" id="food-name" type="text" />
       <Input label="Total Weight (g)" id="total-weight" type="number" />
       <Input label="Serving Size (g)" id="serving-size" type="number" />
