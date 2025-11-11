@@ -99,7 +99,7 @@ describe("saveFood", () => {
       }
 
       const similarName = "my food 2";
-      await saveFood({
+      const result = await saveFood({
         name: similarName,
         calories: 100,
         fat: 10,
@@ -112,6 +112,13 @@ describe("saveFood", () => {
 
       const foundFood = await Food.findOne({ where: { name: similarName } });
       expect(foundFood).toBe(null);
+
+      expect(result?.similarities).toEqual([
+        "my food 2 2",
+        "my food 1",
+        "my 1 2",
+        "my food 4",
+      ]);
     });
 
     it("allows the creation of a similar item when forceSimilarity is true", async () => {

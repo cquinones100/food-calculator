@@ -4,7 +4,7 @@ import { Food } from "@/models/food";
 import { Entry } from "@/models/entry";
 import { InferAttributes } from "sequelize";
 import initializeDb from "@/database";
-import { isSimilar } from "../../lib/isSimilar";
+import { isSimilar, similarityScore } from "../../lib/isSimilar";
 
 class FoodIsSimilarError extends Error {}
 
@@ -30,13 +30,26 @@ async function saveFood(
     })
   ).map(({ dataValues: { name } }) => name);
 
+  let similarities = [];
+
   try {
     if (!forceSimilarity) {
       for (const otherName of allNames) {
         if (isSimilar(otherName, name)) {
-          throw new FoodIsSimilarError();
+          similarities.push(otherName);
         }
       }
+    }
+
+    if (similarities.length > 0) {
+      similarities = similarities.sort((a, b) => {
+        const aSimilarityScore = similarityScore(a, name);
+        const bSimilarityScore = similarityScore(b, name);
+
+        return bSimilarityScore - aSimilarityScore;
+      });
+
+      throw new FoodIsSimilarError();
     }
 
     const newFood = await Food.create(
@@ -68,6 +81,7 @@ async function saveFood(
       return {
         error: true,
         message: "Food name is similar to one that exists",
+        similarities,
       };
     }
 

@@ -1,4 +1,8 @@
 export function isSimilar(string1: string, string2: string, threshold = 0.5) {
+  return similarityScore(string1, string2) > threshold;
+}
+
+export function similarityScore(string1: string, string2: string) {
   const stringOneSplit = string1
     .split(" ")
     .map((word) => word.toLocaleLowerCase());
@@ -17,7 +21,5 @@ export function isSimilar(string1: string, string2: string, threshold = 0.5) {
     return acc;
   }, 0);
 
-  const similarityRatio = numSimilarWords / numWords;
-
-  return similarityRatio > threshold;
+  return Number((numSimilarWords / numWords).toFixed(2));
 }
