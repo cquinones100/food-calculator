@@ -3,17 +3,23 @@ import { Entry } from "@/models/entry";
 import initializeDb from "@/database";
 import serverOnly from "./serverOnly";
 
-async function resetDb() {
+async function resetDb(silent?: boolean) {
+  function log(message: string) {
+    if (silent) return;
+
+    console.log(message);
+  }
+
   await serverOnly();
 
   const db = await initializeDb();
   await Food.drop();
   await Entry.drop();
 
-  console.log("Database dropped");
+  log("Database dropped");
   try {
     await db.sync({ force: true });
-    console.log("Database connected and tables created!");
+    log("Database connected and tables created!");
   } catch (err) {
     console.error(err);
     process.exit(1);
