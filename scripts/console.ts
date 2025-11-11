@@ -3,8 +3,10 @@ import repl from "repl";
 import { Food } from "@/models/food";
 import { Entry } from "@/models/entry";
 import serverOnly from "./serverOnly";
+import setEnvironment from "./setEnvironment";
 
 async function start() {
+  setEnvironment();
   await serverOnly();
   await initializeDb();
 

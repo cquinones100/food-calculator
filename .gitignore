@@ -23,4 +23,5 @@ dist-ssr
 
 .next
 next-env.d.ts
-database.sqlite
+database.*.sqlite
+.env.production

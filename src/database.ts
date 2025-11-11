@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize-typescript";
 import { Food } from "@/models/food";
 import { Entry } from "./models/entry";
+import setEnvironment from "../scripts/setEnvironment";
 
 let db: Sequelize;
 
@@ -9,13 +10,17 @@ async function initializeDb() {
     await import("server-only");
   }
 
+  setEnvironment();
+
   if (db) {
     return db;
   }
 
+  const storage = process.env.DATABASE_URL;
+
   db = new Sequelize({
+    storage,
     dialect: "sqlite",
-    storage: "./database.sqlite",
     logging: false,
   });
 
