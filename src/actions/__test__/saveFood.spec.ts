@@ -186,7 +186,7 @@ describe("saveFood", () => {
       });
 
       expect(count).toBe(1);
-      expect(
+      const entry = expect(
         await Entry.findOne({ where: { date, servingSize, totalWeight } })
       ).toBe(null);
 
@@ -202,6 +202,9 @@ describe("saveFood", () => {
           protein: existingFood.protein,
           createdAt: existingFood.createdAt,
           updatedAt: existingFood.updatedAt,
+          totalWeight: 20,
+          servingSize: 20,
+          date,
         },
       });
     });

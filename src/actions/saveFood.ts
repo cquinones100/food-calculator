@@ -104,7 +104,7 @@ async function saveFood(
       return {
         error: true,
         message: e.message,
-        food: e.food.dataValues as InferAttributes<Food>,
+        food: { ...e.food.dataValues, servingSize, totalWeight, date },
       };
     }
 
