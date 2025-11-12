@@ -1,3 +1,4 @@
+import Modal from "@/modal";
 import { PropsWithChildren, useState, useEffect } from "react";
 
 function Similarity({
@@ -33,17 +34,7 @@ export default function SimilarNamesModal({
   if (!render) return null;
 
   return (
-    <div className="fixed inset-0 flex flex-col items-center bg-gray-900 bg-opacity-50 z-50 gap-2 p-2">
-      <div className="flex justify-end w-full">
-        <button
-          className="rounded p-1"
-          onClick={() => {
-            setRender(false);
-          }}
-        >
-          <span className="text-white p-1 rounded flex text-xs">X</span>
-        </button>
-      </div>
+    <Modal onClose={() => setRender(false)}>
       <div className="text-xl flex justify-center w-full">
         <span className="flex items-center text-center">
           Your submission is similar to the following items. Choose one or
@@ -67,6 +58,6 @@ export default function SimilarNamesModal({
           Continue as is
         </Similarity>
       </ul>
-    </div>
+    </Modal>
   );
 }
