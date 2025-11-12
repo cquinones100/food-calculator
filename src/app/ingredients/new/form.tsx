@@ -116,10 +116,6 @@ export default function Form() {
     });
   }
 
-  function handleKeepExisting() {
-    handleSelect(pendingFood.name);
-  }
-
   function handleUpdateExisting() {
     alert("We will update existing now");
   }
@@ -129,7 +125,6 @@ export default function Form() {
       <ExistingFoodModal
         food={state.existingFood}
         newFood={pendingFood}
-        onClickExisting={handleKeepExisting}
         onClickNew={handleUpdateExisting}
       />
       <SimilarNamesModal

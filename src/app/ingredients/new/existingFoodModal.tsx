@@ -1,6 +1,9 @@
+import saveEntry from "@/actions/saveEntry";
 import Modal from "@/modal";
+import { Entry } from "@/models/entry";
 import { Food } from "@/models/food";
-import { useState, useEffect } from "react";
+import { redirect } from "next/navigation";
+import { useState, useEffect, useActionState, useCallback } from "react";
 import { InferAttributes } from "sequelize";
 
 function FoodItem({
@@ -8,16 +11,19 @@ function FoodItem({
   isNew = false,
   diff,
   onClick,
+  disabled,
 }: {
   food: InferAttributes<Food>;
   isNew?: boolean;
   diff: Set<"calories" | "fat" | "carbs" | "protein">;
   onClick: () => void;
+  disabled?: boolean;
 }) {
   return (
-    <div
+    <button
+      formAction={onClick}
       className="border p-2 rounded mb-2 w-full flex justify-between"
-      onClick={onClick}
+      disabled={disabled}
     >
       <div className="flex flex-col">
         <div className="flex justify-end"></div>
@@ -44,19 +50,19 @@ function FoodItem({
           </div>
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 
 export default function ExistingFoodModal({
   food,
   newFood,
-  onClickExisting,
   onClickNew,
 }: {
-  food: InferAttributes<Food> | undefined;
+  food:
+    | (InferAttributes<Food> & Omit<InferAttributes<Entry>, "food">)
+    | undefined;
   newFood: InferAttributes<Food>;
-  onClickExisting: () => void;
   onClickNew: () => void;
 }) {
   const [foodState, setFoodState] = useState(food);
@@ -64,6 +70,26 @@ export default function ExistingFoodModal({
   useEffect(() => {
     setFoodState(food);
   }, [food]);
+
+  const chooseExisting = useCallback(async () => {
+    if (!food) {
+      return;
+    }
+
+    await saveEntry({
+      food: {
+        name: food.name,
+      },
+      date: food.date,
+      servingSize: food.servingSize,
+      totalWeight: food.totalWeight,
+    });
+
+    redirect("/");
+  }, [food]);
+
+  const [chooseExistingState, chooseExistingAction, chooseExistingIsPending] =
+    useActionState(chooseExisting, null, "/");
 
   if (!foodState || !food) return null;
 
@@ -75,6 +101,8 @@ export default function ExistingFoodModal({
     }
   }
 
+  const loading = chooseExistingIsPending;
+
   return (
     <Modal onClose={() => setFoodState(undefined)}>
       <div className="text-xl flex justify-center w-full">
@@ -82,8 +110,21 @@ export default function ExistingFoodModal({
           A food with this name already exists. Which to keep?
         </span>
       </div>
-      <FoodItem food={food} diff={diff} onClick={onClickExisting} />
-      <FoodItem food={newFood} isNew diff={diff} onClick={onClickNew} />
+      <form>
+        <FoodItem
+          food={food}
+          diff={diff}
+          onClick={chooseExistingAction}
+          disabled={loading}
+        />
+        <FoodItem
+          food={newFood}
+          isNew
+          diff={diff}
+          onClick={onClickNew}
+          disabled={loading}
+        />
+      </form>
     </Modal>
   );
 }
