@@ -218,7 +218,9 @@ export default function Form() {
           disabled={isPending}
           type="submit"
           value="Add Food"
-          className="bg-blue-500 text-white p-2 rounded"
+          className={`${
+            isPending ? "bg-blue-200" : "bg-blue-500"
+          } text-white p-2 rounded`}
         />
       </form>
     </>
