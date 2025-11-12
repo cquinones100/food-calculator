@@ -5,6 +5,8 @@ import { Entry } from "@/models/entry";
 import { InferAttributes } from "sequelize";
 import initializeDb from "@/database";
 import { isSimilar, similarityScore } from "../../lib/isSimilar";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 class FoodIsSimilarError extends Error {}
 
@@ -75,6 +77,7 @@ async function saveFood(
     );
 
     await transaction.commit();
+    revalidatePath("/");
   } catch (e) {
     await transaction.rollback();
     if (e instanceof FoodIsSimilarError) {
@@ -95,6 +98,8 @@ async function saveFood(
 
     throw e;
   }
+
+  redirect("/");
 }
 
 export default saveFood;
