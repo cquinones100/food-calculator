@@ -13,6 +13,7 @@ import { Food } from "@/models/food";
 import { Entry } from "@/models/entry";
 import Input from "@/input";
 import SimilarNamesModal from "./similarNamesModal";
+import ExistingFoodModal from "./existingFoodModal";
 
 export default function Form() {
   const initialState = {
@@ -115,8 +116,22 @@ export default function Form() {
     });
   }
 
+  function handleKeepExisting() {
+    handleSelect(pendingFood.name);
+  }
+
+  function handleUpdateExisting() {
+    alert("We will update existing now");
+  }
+
   return (
     <>
+      <ExistingFoodModal
+        food={state.existingFood}
+        newFood={pendingFood}
+        onClickExisting={handleKeepExisting}
+        onClickNew={handleUpdateExisting}
+      />
       <SimilarNamesModal
         similarities={state.similarities}
         onContinue={handleContinue}
