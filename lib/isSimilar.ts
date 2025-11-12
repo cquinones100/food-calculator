@@ -1,4 +1,4 @@
-export function isSimilar(string1: string, string2: string, threshold = 0.5) {
+export function isSimilar(string1: string, string2: string, threshold = 0.4) {
   return similarityScore(string1, string2) > threshold;
 }
 
