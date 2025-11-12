@@ -150,14 +150,22 @@ describe("saveFood", () => {
       );
     });
 
-    it("does not create a duplicate item when forceSimilarity is true", async () => {
+    it("errors when name is identical and forceSimilarity is true", async () => {
       const name = "My Food";
 
-      const _existingFood = await foodFactory.create({
+      const existingFood = await foodFactory.create({
         name,
       });
 
-      await saveFood(
+      const date = new Date();
+      const servingSize = 20;
+      const totalWeight = 20;
+
+      expect(
+        await Entry.findOne({ where: { date, servingSize, totalWeight } })
+      ).toBe(null);
+
+      const res = await saveFood(
         {
           name,
           calories: 100,
@@ -166,7 +174,7 @@ describe("saveFood", () => {
           protein: 10,
           servingSize: 20,
           totalWeight: 20,
-          date: new Date(),
+          date,
         },
         {
           forceSimilarity: true,
@@ -178,6 +186,24 @@ describe("saveFood", () => {
       });
 
       expect(count).toBe(1);
+      expect(
+        await Entry.findOne({ where: { date, servingSize, totalWeight } })
+      ).toBe(null);
+
+      expect(res).toEqual({
+        error: true,
+        message: "Food already exists",
+        food: {
+          id: existingFood.id,
+          name: existingFood.name,
+          calories: existingFood.calories,
+          fat: existingFood.fat,
+          carbs: existingFood.carbs,
+          protein: existingFood.protein,
+          createdAt: existingFood.createdAt,
+          updatedAt: existingFood.updatedAt,
+        },
+      });
     });
   });
 });

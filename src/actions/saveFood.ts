@@ -7,6 +7,14 @@ import initializeDb from "@/database";
 import { isSimilar, similarityScore } from "../../lib/isSimilar";
 
 class FoodIsSimilarError extends Error {}
+class FoodAlreadyExistsError extends Error {
+  food: Food;
+
+  constructor(food: Food) {
+    super("Food already exists");
+    this.food = food;
+  }
+}
 
 async function saveFood(
   {
@@ -33,6 +41,12 @@ async function saveFood(
   let similarities = [];
 
   try {
+    const existingFood = await Food.findOne({ where: { name } });
+
+    if (existingFood) {
+      throw new FoodAlreadyExistsError(existingFood);
+    }
+
     if (!forceSimilarity) {
       for (const otherName of allNames) {
         if (isSimilar(otherName, name)) {
@@ -85,10 +99,20 @@ async function saveFood(
       };
     }
 
-    if (e instanceof Error) {
+    if (e instanceof FoodAlreadyExistsError) {
       return {
         error: true,
         message: e.message,
+        food: e.food.dataValues,
+      };
+    }
+
+    if (e instanceof Error) {
+      let message = e.message;
+
+      return {
+        error: true,
+        message,
         similarities,
       };
     }
