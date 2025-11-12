@@ -14,10 +14,8 @@ export default function Input({
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
-    <>
-      <label htmlFor={id} className="sr-only">
-        {label}
-      </label>
+    <div className="flex flex-col">
+      <label htmlFor={id}>{label}</label>
       <input
         type={type}
         placeholder={label}
@@ -27,6 +25,6 @@ export default function Input({
         value={value}
         onChange={onChange}
       />
-    </>
+    </div>
   );
 }
