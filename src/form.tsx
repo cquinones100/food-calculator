@@ -168,12 +168,19 @@ export default function Form() {
     );
 
     if (res?.error) {
-      return {
-        similarities: res.similarities || [],
-      };
-    } else {
-      return initialState;
+      if (res.similarities) {
+        return {
+          similarities: res.similarities || [],
+        };
+      } else if (res.food) {
+        return {
+          existingFood: res.food,
+          similarities: res.similarities || [],
+        };
+      }
     }
+
+    return initialState;
   }
 
   const [state, formAction, isPending] = useActionState(onSubmit, initialState);
