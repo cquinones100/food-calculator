@@ -103,7 +103,7 @@ async function saveFood(
       return {
         error: true,
         message: e.message,
-        food: e.food.dataValues,
+        food: e.food.dataValues as InferAttributes<Food>,
       };
     }
 
