@@ -149,5 +149,35 @@ describe("saveFood", () => {
         null
       );
     });
+
+    it("does not create a duplicate item when forceSimilarity is true", async () => {
+      const name = "My Food";
+
+      const _existingFood = await foodFactory.create({
+        name,
+      });
+
+      await saveFood(
+        {
+          name,
+          calories: 100,
+          fat: 10,
+          carbs: 10,
+          protein: 10,
+          servingSize: 20,
+          totalWeight: 20,
+          date: new Date(),
+        },
+        {
+          forceSimilarity: true,
+        }
+      );
+
+      const count = await Food.count({
+        where: { name },
+      });
+
+      expect(count).toBe(1);
+    });
   });
 });
