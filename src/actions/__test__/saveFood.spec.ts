@@ -14,7 +14,7 @@ describe("saveFood", () => {
 
     expect(await Food.findOne({ where: { name } })).toBe(null);
 
-    await saveFood({
+    const res = await saveFood({
       name,
       calories,
       fat,

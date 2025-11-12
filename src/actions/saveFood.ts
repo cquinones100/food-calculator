@@ -5,6 +5,7 @@ import { Entry } from "@/models/entry";
 import { InferAttributes } from "sequelize";
 import initializeDb from "@/database";
 import { isSimilar, similarityScore } from "../../lib/isSimilar";
+import saveEntry from "./saveEntry";
 
 class FoodIsSimilarError extends Error {}
 class FoodAlreadyExistsError extends Error {
@@ -66,7 +67,7 @@ async function saveFood(
       throw new FoodIsSimilarError();
     }
 
-    const newFood = await Food.create(
+    const food = await Food.create(
       {
         name,
         calories,
@@ -80,15 +81,15 @@ async function saveFood(
       }
     );
 
-    await Entry.create(
-      { foodId: newFood.dataValues.id, date, servingSize, totalWeight },
-      {
-        fields: ["date", "servingSize", "totalWeight"],
-        transaction,
-      }
-    );
+    await saveEntry({
+      food,
+      date,
+      servingSize,
+      totalWeight,
+      transaction,
+    });
 
-    await transaction.commit();
+    transaction.commit();
   } catch (e) {
     await transaction.rollback();
     if (e instanceof FoodIsSimilarError) {
