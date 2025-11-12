@@ -1,4 +1,5 @@
 import saveEntry from "@/actions/saveEntry";
+import updateFood from "@/actions/updateFood";
 import Modal from "@/modal";
 import { Entry } from "@/models/entry";
 import { Food } from "@/models/food";
@@ -57,12 +58,13 @@ function FoodItem({
 export default function ExistingFoodModal({
   food,
   newFood,
-  onClickNew,
 }: {
   food:
     | (InferAttributes<Food> & Omit<InferAttributes<Entry>, "food">)
     | undefined;
-  newFood: InferAttributes<Food>;
+  newFood:
+    | (InferAttributes<Food> & Omit<InferAttributes<Entry>, "food">)
+    | undefined;
   onClickNew: () => void;
 }) {
   const [foodState, setFoodState] = useState(food);
@@ -88,10 +90,38 @@ export default function ExistingFoodModal({
     redirect("/");
   }, [food]);
 
-  const [chooseExistingState, chooseExistingAction, chooseExistingIsPending] =
-    useActionState(chooseExisting, null, "/");
+  const chooseToUpdate = useCallback(async () => {
+    if (!food || !newFood) {
+      return;
+    }
 
-  if (!foodState || !food) return null;
+    await updateFood({
+      name: food.name,
+      calories: newFood.calories,
+      carbs: newFood.carbs,
+      fat: newFood.fat,
+      protein: newFood.protein,
+    });
+
+    await saveEntry({
+      food: {
+        name: food.name,
+      },
+      date: food.date,
+      servingSize: food.servingSize,
+      totalWeight: food.totalWeight,
+    });
+
+    redirect("/");
+  }, [food, newFood]);
+
+  const [chooseExistingState, chooseExistingAction, chooseExistingIsPending] =
+    useActionState(chooseExisting, null);
+
+  const [chooseToUpdateState, chooseToUpdateAction, chooseToUpdateIsPending] =
+    useActionState(chooseToUpdate, null);
+
+  if (!foodState || !food || !newFood) return null;
 
   const diff = new Set<"calories" | "fat" | "carbs" | "protein">();
 
@@ -101,7 +131,7 @@ export default function ExistingFoodModal({
     }
   }
 
-  const loading = chooseExistingIsPending;
+  const loading = chooseExistingIsPending || chooseToUpdateIsPending;
 
   return (
     <Modal onClose={() => setFoodState(undefined)}>
@@ -121,7 +151,7 @@ export default function ExistingFoodModal({
           food={newFood}
           isNew
           diff={diff}
-          onClick={onClickNew}
+          onClick={chooseToUpdateAction}
           disabled={loading}
         />
       </form>

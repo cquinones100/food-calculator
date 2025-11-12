@@ -104,7 +104,17 @@ async function saveFood(
       return {
         error: true,
         message: e.message,
-        food: { ...e.food.dataValues, servingSize, totalWeight, date },
+        existingFood: { ...e.food.dataValues, servingSize, totalWeight, date },
+        newFood: {
+          ...e.food.dataValues,
+          calories,
+          fat,
+          carbs,
+          protein,
+          servingSize,
+          totalWeight,
+          date,
+        },
       };
     }
 

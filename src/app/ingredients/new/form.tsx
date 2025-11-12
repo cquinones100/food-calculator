@@ -70,9 +70,10 @@ export default function Form() {
         return {
           similarities: res.similarities || [],
         };
-      } else if (res.food) {
+      } else if (res.existingFood) {
         return {
-          existingFood: res.food,
+          newFood: res.newFood,
+          existingFood: res.existingFood,
           similarities: res.similarities || [],
         };
       }
@@ -124,7 +125,7 @@ export default function Form() {
     <>
       <ExistingFoodModal
         food={state.existingFood}
-        newFood={pendingFood}
+        newFood={state.newFood}
         onClickNew={handleUpdateExisting}
       />
       <SimilarNamesModal

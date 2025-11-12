@@ -165,13 +165,18 @@ describe("saveFood", () => {
         await Entry.findOne({ where: { date, servingSize, totalWeight } })
       ).toBe(null);
 
+      const calories = 100;
+      const fat = 10;
+      const carbs = 10;
+      const protein = 10;
+
       const res = await saveFood(
         {
           name,
-          calories: 100,
-          fat: 10,
-          carbs: 10,
-          protein: 10,
+          calories,
+          fat,
+          carbs,
+          protein,
           servingSize: 20,
           totalWeight: 20,
           date,
@@ -193,7 +198,7 @@ describe("saveFood", () => {
       expect(res).toEqual({
         error: true,
         message: "Food already exists",
-        food: {
+        existingFood: {
           id: existingFood.id,
           name: existingFood.name,
           calories: existingFood.calories,
@@ -202,6 +207,19 @@ describe("saveFood", () => {
           protein: existingFood.protein,
           createdAt: existingFood.createdAt,
           updatedAt: existingFood.updatedAt,
+          totalWeight: 20,
+          servingSize: 20,
+          date,
+        },
+        newFood: {
+          id: existingFood.id,
+          name: existingFood.name,
+          createdAt: existingFood.createdAt,
+          updatedAt: existingFood.updatedAt,
+          calories,
+          fat,
+          carbs,
+          protein,
           totalWeight: 20,
           servingSize: 20,
           date,
