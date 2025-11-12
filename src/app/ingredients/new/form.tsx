@@ -1,7 +1,7 @@
 "use client";
 
 import { InferAttributes } from "sequelize";
-import saveFood from "./actions/saveFood";
+import saveFood from "@/actions/saveFood";
 import {
   ChangeEvent,
   FormEvent,
@@ -12,8 +12,8 @@ import {
   useRef,
   useState,
 } from "react";
-import { Food } from "./models/food";
-import { Entry } from "./models/entry";
+import { Food } from "@/models/food";
+import { Entry } from "@/models/entry";
 
 function Input({
   label,
