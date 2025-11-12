@@ -3,7 +3,6 @@
 import { InferAttributes } from "sequelize";
 import saveFood from "@/actions/saveFood";
 import {
-  ChangeEvent,
   FormEvent,
   PropsWithChildren,
   startTransition,
@@ -14,37 +13,7 @@ import {
 } from "react";
 import { Food } from "@/models/food";
 import { Entry } from "@/models/entry";
-
-function Input({
-  label,
-  id,
-  type,
-  value,
-  onChange,
-}: {
-  label: string;
-  id: string;
-  type: "text" | "number";
-  value: string | number;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-}) {
-  return (
-    <>
-      <label htmlFor={id} className="sr-only">
-        {label}
-      </label>
-      <input
-        type={type}
-        placeholder={label}
-        className="border p-2 rounded max-w-[150px]"
-        id={id}
-        name={id}
-        value={value}
-        onChange={onChange}
-      />
-    </>
-  );
-}
+import Input from "@/input";
 
 function Similarity({
   children,
