@@ -1,7 +1,6 @@
-import { Food } from "@/models/food";
-import { Entry } from "@/models/entry";
-import initializeDb from "@/database";
+import initializeDb, { dropDb } from "@/database";
 import serverOnly from "./serverOnly";
+import { unlink } from "fs/promises";
 
 async function resetDb(silent?: boolean) {
   function log(message: string) {
@@ -12,10 +11,8 @@ async function resetDb(silent?: boolean) {
 
   await serverOnly();
 
+  await dropDb();
   const db = await initializeDb();
-  await Food.drop();
-  await Entry.drop();
-
   log("Database dropped");
   try {
     await db.sync({ force: true });

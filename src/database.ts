@@ -2,8 +2,20 @@ import { Sequelize } from "sequelize-typescript";
 import { Food } from "@/models/food";
 import { Entry } from "./models/entry";
 import setEnvironment from "../scripts/setEnvironment";
+import { unlink } from "fs/promises";
 
-let db: Sequelize;
+let db: Sequelize | undefined;
+
+export async function dropDb() {
+  setEnvironment();
+
+  const storage = process.env.DATABASE_URL;
+  try {
+    await unlink(storage!);
+  } catch (e) {}
+
+  db = undefined;
+}
 
 async function initializeDb() {
   if (process.env.NEXT_RUNTIME) {
