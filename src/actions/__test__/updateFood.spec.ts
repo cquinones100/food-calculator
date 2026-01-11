@@ -28,7 +28,7 @@ describe("updateFood", () => {
 
         const refreshedFood = await existingFood.reload();
         expect(refreshedFood[field]).toBe(updated);
-      }
+      },
     );
   });
 });

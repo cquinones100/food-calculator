@@ -35,7 +35,7 @@ async function saveEntry({
       {
         fields: ["foodId", "date", "servingSize", "totalWeight"],
         transaction,
-      }
+      },
     )
   ).dataValues;
 }

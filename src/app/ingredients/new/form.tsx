@@ -35,7 +35,7 @@ export default function Form() {
 
   async function onSubmit(
     _previousState: { similarities: string[] },
-    formData: FormData
+    formData: FormData,
   ) {
     let name = formData.get("food-name");
 
@@ -62,7 +62,7 @@ export default function Form() {
       },
       {
         forceSimilarity,
-      }
+      },
     );
 
     if (res?.error) {

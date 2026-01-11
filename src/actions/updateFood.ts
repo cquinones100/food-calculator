@@ -23,7 +23,7 @@ async function updateFood({
       where: {
         name,
       },
-    }
+    },
   );
 }
 

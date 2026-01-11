@@ -36,6 +36,7 @@
     "eslint-config-next": "16.1.1",
     "fishery": "^2.3.1",
     "jsdom": "^27.1.0",
+    "prettier": "3.7.4",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vite-tsconfig-paths": "^5.1.4",

@@ -28,7 +28,7 @@ async function saveFood(
     servingSize,
     totalWeight,
   }: InferAttributes<Food> & Omit<InferAttributes<Entry>, "food" | "foodId">,
-  { forceSimilarity = false } = {}
+  { forceSimilarity = false } = {},
 ) {
   const db = await initializeDb();
   const transaction = await db.transaction();
@@ -78,7 +78,7 @@ async function saveFood(
       {
         fields: ["name", "calories", "carbs", "fat", "protein"],
         transaction,
-      }
+      },
     );
 
     await saveEntry({

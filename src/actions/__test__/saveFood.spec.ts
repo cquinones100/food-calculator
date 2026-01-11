@@ -40,7 +40,7 @@ describe("saveFood", () => {
     const totalWeight = 20;
 
     expect(
-      await Entry.findOne({ where: { date, servingSize, totalWeight } })
+      await Entry.findOne({ where: { date, servingSize, totalWeight } }),
     ).toBe(null);
 
     await saveFood({
@@ -142,11 +142,11 @@ describe("saveFood", () => {
         },
         {
           forceSimilarity: true,
-        }
+        },
       );
 
       expect(await Food.findOne({ where: { name: similarName } })).not.toBe(
-        null
+        null,
       );
     });
 
@@ -162,7 +162,7 @@ describe("saveFood", () => {
       const totalWeight = 20;
 
       expect(
-        await Entry.findOne({ where: { date, servingSize, totalWeight } })
+        await Entry.findOne({ where: { date, servingSize, totalWeight } }),
       ).toBe(null);
 
       const calories = 100;
@@ -183,7 +183,7 @@ describe("saveFood", () => {
         },
         {
           forceSimilarity: true,
-        }
+        },
       );
 
       const count = await Food.count({
@@ -192,7 +192,7 @@ describe("saveFood", () => {
 
       expect(count).toBe(1);
       const entry = expect(
-        await Entry.findOne({ where: { date, servingSize, totalWeight } })
+        await Entry.findOne({ where: { date, servingSize, totalWeight } }),
       ).toBe(null);
 
       expect(res).toEqual({
