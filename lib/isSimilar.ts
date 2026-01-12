@@ -1,12 +1,12 @@
-export function isSimilar(string1: string, string2: string, threshold = 0.4) {
-  return similarityScore(string1, string2) > threshold;
+export function isSimilar(base: string, comparison: string, threshold = 0.4) {
+  return similarityScore(base, comparison) > threshold;
 }
 
-export function similarityScore(string1: string, string2: string) {
-  const stringOneSplit = string1
+export function similarityScore(base: string, comparison: string) {
+  const stringOneSplit = base
     .split(" ")
     .map((word) => word.toLocaleLowerCase());
-  const stringTwoSplit = string2
+  const stringTwoSplit = comparison
     .split(" ")
     .map((word) => word.toLocaleLowerCase());
   const numWords = stringOneSplit.length;
