@@ -1,6 +1,6 @@
 import initializeDb, { dropDb } from "@/database";
-import serverOnly from "./serverOnly";
-import { unlink } from "fs/promises";
+import serverOnly from "@/scripts/serverOnly";
+import createFoods from "@/database/migrations/createFoods";
 
 async function resetDb(silent?: boolean) {
   function log(message: string) {
@@ -12,15 +12,11 @@ async function resetDb(silent?: boolean) {
   await serverOnly();
 
   await dropDb();
-  const db = await initializeDb();
   log("Database dropped");
-  try {
-    await db.sync({ force: true });
-    log("Database connected and tables created!");
-  } catch (err) {
-    console.error(err);
-    process.exit(1);
-  }
+  await initializeDb();
+  await createFoods();
+
+  log("Database connected and tables created!");
 }
 
 export default resetDb;
