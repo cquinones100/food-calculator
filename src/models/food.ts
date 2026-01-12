@@ -16,4 +16,5 @@ export class Food extends Model {
   @AllowNull(false) @Column(DataType.NUMBER) fat!: number;
   @AllowNull(false) @Column(DataType.NUMBER) carbs!: number;
   @AllowNull(false) @Column(DataType.NUMBER) protein!: number;
+  @AllowNull(false) @Column(DataType.NUMBER) servingSize!: number;
 }

@@ -10,37 +10,41 @@ import {
   useState,
 } from "react";
 import { Food } from "@/models/food";
-import { Entry } from "@/models/entry";
 import Input from "@/input";
 import SimilarNamesModal from "./similarNamesModal";
 import ExistingFoodModal from "./existingFoodModal";
+
+export type ServingAttributes = {
+  totalWeight: number;
+};
 
 export default function Form() {
   const initialState = {
     similarities: [],
   };
 
-  const [pendingFood, setPendingFood] = useState<
-    InferAttributes<Food> & Omit<InferAttributes<Entry>, "food" | "foodId">
-  >({
+  const [servingAttributes, setServingAttributes] = useState<ServingAttributes>(
+    {
+      totalWeight: 0,
+    }
+  );
+
+  const [pendingFood, setPendingFood] = useState<InferAttributes<Food>>({
     name: "",
     calories: 0,
     carbs: 0,
     fat: 0,
     protein: 0,
     servingSize: 0,
-    totalWeight: 0,
-    date: new Date(),
   });
 
   async function onSubmit(
     _previousState: { similarities: string[] },
-    formData: FormData,
+    formData: FormData
   ) {
     let name = formData.get("food-name");
 
-    const { calories, carbs, fat, protein, servingSize, totalWeight, date } =
-      pendingFood;
+    const { calories, carbs, fat, protein, servingSize } = pendingFood;
     name = name ? String(name) : pendingFood.name;
     const forceSimilarity = formData.get("force-similarity") === "true";
 
@@ -57,12 +61,10 @@ export default function Form() {
         fat,
         protein,
         servingSize,
-        totalWeight,
-        date,
       },
       {
         forceSimilarity,
-      },
+      }
     );
 
     if (res?.error) {
@@ -151,10 +153,9 @@ export default function Form() {
           label="Total Weight (g)"
           id="total-weight"
           type="number"
-          value={pendingFood.totalWeight}
+          value={servingAttributes.totalWeight}
           onChange={(e) => {
-            setPendingFood({
-              ...pendingFood,
+            setServingAttributes({
               totalWeight: Number(e.target.value),
             });
           }}

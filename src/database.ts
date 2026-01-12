@@ -1,6 +1,5 @@
 import { Sequelize } from "sequelize-typescript";
 import { Food } from "@/models/food";
-import { Entry } from "./models/entry";
 import setEnvironment from "../scripts/setEnvironment";
 import { unlink } from "fs/promises";
 
@@ -36,7 +35,7 @@ async function initializeDb() {
     logging: false,
   });
 
-  db.addModels([Food, Entry]);
+  db.addModels([Food]);
 
   return initializeDb();
 }

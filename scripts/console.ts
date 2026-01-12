@@ -1,7 +1,6 @@
 import initializeDb from "@/database";
 import repl from "repl";
 import { Food } from "@/models/food";
-import { Entry } from "@/models/entry";
 import serverOnly from "./serverOnly";
 import setEnvironment from "./setEnvironment";
 
@@ -13,7 +12,6 @@ async function start() {
   const r = repl.start({ useGlobal: true, useColors: true });
   Object.assign(r.context, {
     Food,
-    Entry,
   });
 }
 

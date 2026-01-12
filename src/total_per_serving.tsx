@@ -3,12 +3,12 @@
 import React, { useMemo } from "react";
 import { Food } from "./models/food";
 import { InferAttributes } from "sequelize";
-import { Entry } from "./models/entry";
+import { ServingAttributes } from "./app/ingredients/new/form";
 
 export default function TotalPerServing({
   foods,
 }: {
-  foods: (InferAttributes<Food> & InferAttributes<Entry>)[];
+  foods: (InferAttributes<Food> & ServingAttributes)[];
 }) {
   const [numServings, setNumServings] = React.useState<number | "">("");
 

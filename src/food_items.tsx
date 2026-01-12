@@ -1,9 +1,9 @@
-import { Entry } from "@/models/entry";
+import { ServingAttributes } from "./app/ingredients/new/form";
 import { Food } from "./models/food";
 
-export type FoodEntry = Entry & Food;
+export type FoodEntry = Food;
 
-function FoodItem({ food }: { food: FoodEntry }) {
+function FoodItem({ food }: { food: FoodEntry & ServingAttributes }) {
   return (
     <div className="border p-2 rounded mb-2 w-full flex justify-between">
       <div className="flex flex-col">
@@ -27,7 +27,11 @@ function FoodItem({ food }: { food: FoodEntry }) {
   );
 }
 
-export default function FoodItems({ foods }: { foods: FoodEntry[] }) {
+export default function FoodItems({
+  foods,
+}: {
+  foods: (FoodEntry & ServingAttributes)[];
+}) {
   if (!foods || foods.length === 0) {
     return <p className="mb-4">No foods added yet.</p>;
   }

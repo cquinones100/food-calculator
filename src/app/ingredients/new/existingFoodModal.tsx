@@ -1,7 +1,5 @@
-import saveEntry from "@/actions/saveEntry";
 import updateFood from "@/actions/updateFood";
 import Modal from "@/modal";
-import { Entry } from "@/models/entry";
 import { Food } from "@/models/food";
 import { redirect } from "next/navigation";
 import { useState, useEffect, useActionState, useCallback } from "react";
@@ -59,12 +57,8 @@ export default function ExistingFoodModal({
   food,
   newFood,
 }: {
-  food:
-    | (InferAttributes<Food> & Omit<InferAttributes<Entry>, "food">)
-    | undefined;
-  newFood:
-    | (InferAttributes<Food> & Omit<InferAttributes<Entry>, "food">)
-    | undefined;
+  food: InferAttributes<Food> | undefined;
+  newFood: InferAttributes<Food> | undefined;
   onClickNew: () => void;
 }) {
   const [foodState, setFoodState] = useState(food);
@@ -77,15 +71,6 @@ export default function ExistingFoodModal({
     if (!food) {
       return;
     }
-
-    await saveEntry({
-      food: {
-        name: food.name,
-      },
-      date: food.date,
-      servingSize: food.servingSize,
-      totalWeight: food.totalWeight,
-    });
 
     redirect("/");
   }, [food]);
@@ -101,15 +86,6 @@ export default function ExistingFoodModal({
       carbs: newFood.carbs,
       fat: newFood.fat,
       protein: newFood.protein,
-    });
-
-    await saveEntry({
-      food: {
-        name: food.name,
-      },
-      date: food.date,
-      servingSize: food.servingSize,
-      totalWeight: food.totalWeight,
     });
 
     redirect("/");

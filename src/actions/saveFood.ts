@@ -1,11 +1,9 @@
 "use server";
 
 import { Food } from "@/models/food";
-import { Entry } from "@/models/entry";
 import { InferAttributes } from "sequelize";
 import initializeDb from "@/database";
 import { isSimilar, similarityScore } from "../../lib/isSimilar";
-import saveEntry from "./saveEntry";
 
 class FoodIsSimilarError extends Error {}
 class FoodAlreadyExistsError extends Error {
@@ -18,17 +16,8 @@ class FoodAlreadyExistsError extends Error {
 }
 
 async function saveFood(
-  {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-    date,
-    servingSize,
-    totalWeight,
-  }: InferAttributes<Food> & Omit<InferAttributes<Entry>, "food" | "foodId">,
-  { forceSimilarity = false } = {},
+  { name, calories, fat, carbs, protein, servingSize }: InferAttributes<Food>,
+  { forceSimilarity = false } = {}
 ) {
   const db = await initializeDb();
   const transaction = await db.transaction();
@@ -67,27 +56,20 @@ async function saveFood(
       throw new FoodIsSimilarError();
     }
 
-    const food = await Food.create(
+    await Food.create(
       {
         name,
         calories,
         fat,
         carbs,
         protein,
+        servingSize,
       },
       {
         fields: ["name", "calories", "carbs", "fat", "protein"],
         transaction,
-      },
+      }
     );
-
-    await saveEntry({
-      food,
-      date,
-      servingSize,
-      totalWeight,
-      transaction,
-    });
 
     transaction.commit();
   } catch (e) {
@@ -104,16 +86,13 @@ async function saveFood(
       return {
         error: true,
         message: e.message,
-        existingFood: { ...e.food.dataValues, servingSize, totalWeight, date },
+        existingFood: { ...e.food.dataValues },
         newFood: {
           ...e.food.dataValues,
           calories,
           fat,
           carbs,
           protein,
-          servingSize,
-          totalWeight,
-          date,
         },
       };
     }

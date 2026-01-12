@@ -1,7 +1,6 @@
 import { Food } from "@/models/food";
 import { describe, expect, it } from "vitest";
 import saveFood from "../saveFood";
-import { Entry } from "@/models/entry";
 import { foodFactory } from "../../../factories/food";
 
 describe("saveFood", () => {
@@ -11,37 +10,9 @@ describe("saveFood", () => {
     const fat = 10;
     const carbs = 5;
     const protein = 5;
+    const servingSize = 100;
 
     expect(await Food.findOne({ where: { name } })).toBe(null);
-
-    const res = await saveFood({
-      name,
-      calories,
-      fat,
-      carbs,
-      protein,
-      servingSize: 20,
-      totalWeight: 20,
-      date: new Date(),
-    });
-
-    const foundFood = await Food.findOne({ where: { name } });
-    expect(foundFood).not.toBe(null);
-  });
-
-  it("saves a food entry", async () => {
-    const date = new Date();
-    const name = "My Food";
-    const calories = 100;
-    const fat = 10;
-    const carbs = 5;
-    const protein = 5;
-    const servingSize = 20;
-    const totalWeight = 20;
-
-    expect(
-      await Entry.findOne({ where: { date, servingSize, totalWeight } }),
-    ).toBe(null);
 
     await saveFood({
       name,
@@ -49,16 +20,11 @@ describe("saveFood", () => {
       fat,
       carbs,
       protein,
-      servingSize: 20,
-      totalWeight: 20,
-      date,
+      servingSize,
     });
 
-    const foundEntry = await Entry.findOne({
-      where: { date, servingSize, totalWeight },
-    });
-
-    expect(foundEntry).not.toBe(null);
+    const foundFood = await Food.findOne({ where: { name } });
+    expect(foundFood).not.toBe(null);
   });
 
   describe("submitting an item similar to others that exist", () => {
@@ -76,9 +42,7 @@ describe("saveFood", () => {
         fat: 10,
         carbs: 10,
         protein: 10,
-        servingSize: 20,
-        totalWeight: 20,
-        date: new Date(),
+        servingSize: 100,
       });
 
       const foundFood = await Food.findOne({ where: { name: similarName } });
@@ -105,9 +69,7 @@ describe("saveFood", () => {
         fat: 10,
         carbs: 10,
         protein: 10,
-        servingSize: 20,
-        totalWeight: 20,
-        date: new Date(),
+        servingSize: 100,
       });
 
       const foundFood = await Food.findOne({ where: { name: similarName } });
@@ -136,17 +98,15 @@ describe("saveFood", () => {
           fat: 10,
           carbs: 10,
           protein: 10,
-          servingSize: 20,
-          totalWeight: 20,
-          date: new Date(),
+          servingSize: 100,
         },
         {
           forceSimilarity: true,
-        },
+        }
       );
 
       expect(await Food.findOne({ where: { name: similarName } })).not.toBe(
-        null,
+        null
       );
     });
 
@@ -158,17 +118,12 @@ describe("saveFood", () => {
       });
 
       const date = new Date();
-      const servingSize = 20;
-      const totalWeight = 20;
-
-      expect(
-        await Entry.findOne({ where: { date, servingSize, totalWeight } }),
-      ).toBe(null);
 
       const calories = 100;
       const fat = 10;
       const carbs = 10;
       const protein = 10;
+      const servingSize = 100;
 
       const res = await saveFood(
         {
@@ -177,13 +132,11 @@ describe("saveFood", () => {
           fat,
           carbs,
           protein,
-          servingSize: 20,
-          totalWeight: 20,
-          date,
+          servingSize,
         },
         {
           forceSimilarity: true,
-        },
+        }
       );
 
       const count = await Food.count({
@@ -191,9 +144,6 @@ describe("saveFood", () => {
       });
 
       expect(count).toBe(1);
-      const entry = expect(
-        await Entry.findOne({ where: { date, servingSize, totalWeight } }),
-      ).toBe(null);
 
       expect(res).toEqual({
         error: true,

@@ -11,6 +11,7 @@ export const foodFactory = Factory.define<Food>(({ sequence, onCreate }) => {
     fat: 10,
     carbs: 5,
     protein: 5,
+    servingSize: 100,
   };
 
   const food = Food.build(attributes);
