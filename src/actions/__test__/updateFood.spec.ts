@@ -1,13 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { foodFactory } from "../../../factories/food";
 import updateFood from "../updateFood";
-import { InferAttributes } from "sequelize";
-import { Food } from "@/models/food";
+import initializeDb, { NewFood } from "@/database";
 
 describe("updateFood", () => {
   describe("updateFoodByName", () => {
     it.each<{
-      field: keyof InferAttributes<Food>;
+      field: keyof NewFood;
       initial: number;
       updated: number;
     }>([
@@ -26,9 +25,18 @@ describe("updateFood", () => {
 
         await updateFood({ name, [field]: updated });
 
-        const refreshedFood = await existingFood.reload();
+        const db = await initializeDb();
+
+        const refreshedFood = (
+          await db
+            .selectFrom("Foods")
+            .selectAll()
+            .where("name", "=", name)
+            .execute()
+        )[0];
+
         expect(refreshedFood[field]).toBe(updated);
-      },
+      }
     );
   });
 });

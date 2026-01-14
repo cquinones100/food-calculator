@@ -6,6 +6,6 @@ describe("getFoods", () => {
   it("retrieves all foods from the database", async () => {
     const foods = await foodFactory.createList(10);
 
-    expect(await getFoods()).toEqual(foods.map(({ dataValues }) => dataValues));
+    expect(await getFoods()).toEqual(foods);
   });
 });

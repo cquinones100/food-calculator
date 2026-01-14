@@ -26,20 +26,22 @@ async function saveFood(
   let similarities: string[] = [];
 
   try {
-    const existingFood = await db
-      .selectFrom("Foods")
-      .where("name", "in", allNames)
-      .selectAll()
-      .limit(1)
-      .execute();
+    const existingFood = (
+      await db
+        .selectFrom("Foods")
+        .where("name", "=", name)
+        .selectAll()
+        .limit(1)
+        .execute()
+    )[0];
 
     if (existingFood) {
-      throw new FoodAlreadyExistsError(existingFood[0]);
+      throw new FoodAlreadyExistsError(existingFood);
     }
 
     if (!forceSimilarity) {
       for (const otherName of allNames) {
-        if (isSimilar(otherName, name)) {
+        if (isSimilar(name, otherName)) {
           similarities.push(otherName);
         }
       }
@@ -47,8 +49,8 @@ async function saveFood(
 
     if (similarities.length > 0) {
       similarities = similarities.sort((a, b) => {
-        const aSimilarityScore = similarityScore(a, name);
-        const bSimilarityScore = similarityScore(b, name);
+        const aSimilarityScore = similarityScore(name, a);
+        const bSimilarityScore = similarityScore(name, b);
 
         return bSimilarityScore - aSimilarityScore;
       });

@@ -2,9 +2,9 @@ import initializeDb, { Food, NewFood } from "@/database";
 import { Factory } from "fishery";
 
 export const foodFactory = Factory.define<Food | NewFood>(
-  ({ sequence, onCreate }) => {
+  ({ params, sequence, onCreate }) => {
     const food: NewFood = {
-      name: `food-${sequence}`,
+      name: params.name ?? `food-${sequence}`,
       calories: 100,
       fat: 10,
       carbs: 5,
@@ -15,9 +15,13 @@ export const foodFactory = Factory.define<Food | NewFood>(
     onCreate(async () => {
       const db = await initializeDb();
 
-      await db.insertInto("Foods").values(food).execute();
+      const createdFood = await db
+        .insertInto("Foods")
+        .values(food)
+        .returningAll()
+        .execute();
 
-      return food;
+      return createdFood[0];
     });
 
     return food;

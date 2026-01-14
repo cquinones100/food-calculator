@@ -1,8 +1,6 @@
 "use server";
 
-import initializeDb from "@/database";
-import { Food } from "@/models/food";
-import { InferAttributes } from "sequelize";
+import initializeDb, { NewFood } from "@/database";
 
 async function updateFood({
   name,
@@ -10,21 +8,20 @@ async function updateFood({
   carbs,
   fat,
   protein,
-}: { name: string } & Omit<Partial<InferAttributes<Food>>, "name">) {
-  await initializeDb();
-  await Food.update(
-    {
+  servingSize,
+}: Omit<Partial<NewFood>, "name"> & { name: NewFood["name"] }) {
+  const db = await initializeDb();
+  await db
+    .updateTable("Foods")
+    .set({
       calories,
       carbs,
       fat,
       protein,
-    },
-    {
-      where: {
-        name,
-      },
-    },
-  );
+      servingSize,
+    })
+    .where("name", "=", name)
+    .execute();
 }
 
 export default updateFood;

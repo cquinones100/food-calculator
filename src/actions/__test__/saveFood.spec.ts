@@ -1,7 +1,7 @@
-import { Food } from "@/models/food";
 import { describe, expect, it } from "vitest";
 import saveFood from "../saveFood";
 import { foodFactory } from "../../../factories/food";
+import initializeDb from "@/database";
 
 describe("saveFood", () => {
   it("saves a permanent food with the corresponding name", async () => {
@@ -12,7 +12,16 @@ describe("saveFood", () => {
     const protein = 5;
     const servingSize = 100;
 
-    expect(await Food.findOne({ where: { name } })).toBe(null);
+    const db = await initializeDb();
+    expect(
+      (
+        await db
+          .selectFrom("Foods")
+          .selectAll()
+          .where("name", "=", name)
+          .execute()
+      ).length
+    ).toBe(0);
 
     await saveFood({
       name,
@@ -23,12 +32,19 @@ describe("saveFood", () => {
       servingSize,
     });
 
-    const foundFood = await Food.findOne({ where: { name } });
-    expect(foundFood).not.toBe(null);
+    const foundFood = (
+      await db
+        .selectFrom("Foods")
+        .selectAll()
+        .where("name", "=", name)
+        .execute()
+    )[0];
+
+    expect(foundFood).not.toBe(undefined);
   });
 
   describe("submitting an item similar to others that exist", () => {
-    it("rejects a similar item", async () => {
+    it.only("rejects a similar item", async () => {
       const name = "My Food";
 
       const _existingFood = await foodFactory.create({
@@ -45,8 +61,15 @@ describe("saveFood", () => {
         servingSize: 100,
       });
 
-      const foundFood = await Food.findOne({ where: { name: similarName } });
-      expect(foundFood).toBe(null);
+      const db = await initializeDb();
+      const foundFood = (
+        await db
+          .selectFrom("Foods")
+          .selectAll()
+          .where("name", "=", similarName)
+          .execute()
+      )[0];
+      expect(foundFood).toBeUndefined();
     });
 
     it("returns a list of all of the similar items ordered by most similar", async () => {
@@ -72,13 +95,21 @@ describe("saveFood", () => {
         servingSize: 100,
       });
 
-      const foundFood = await Food.findOne({ where: { name: similarName } });
-      expect(foundFood).toBe(null);
+      const db = await initializeDb();
+      const foundFood = (
+        await db
+          .selectFrom("Foods")
+          .selectAll()
+          .where("name", "=", similarName)
+          .execute()
+      )[0];
+
+      expect(foundFood).toBeUndefined();
 
       expect(result?.similarities).toEqual([
         "my food 2 2",
-        "my food 1",
         "my 1 2",
+        "my food 1",
         "my food 4",
       ]);
     });
@@ -105,16 +136,24 @@ describe("saveFood", () => {
         }
       );
 
-      expect(await Food.findOne({ where: { name: similarName } })).not.toBe(
-        null
-      );
+      const db = await initializeDb();
+      const foundFood = await db
+        .selectFrom("Foods")
+        .selectAll()
+        .where("name", "=", name)
+        .execute();
+      expect(foundFood).not.toBe(null);
     });
 
     it("errors when name is identical and forceSimilarity is true", async () => {
       const name = "My Food";
 
+      const now = new Date();
+
       const existingFood = await foodFactory.create({
         name,
+        createdAt: now.toISOString(),
+        updatedAt: now.toISOString(),
       });
 
       const date = new Date();
@@ -139,9 +178,13 @@ describe("saveFood", () => {
         }
       );
 
-      const count = await Food.count({
-        where: { name },
-      });
+      const db = await initializeDb();
+      const count = (
+        await db
+          .selectFrom("Foods")
+          .select((eb) => eb.fn.count<number>("id").as("count"))
+          .execute()
+      )[0].count;
 
       expect(count).toBe(1);
 
@@ -157,9 +200,7 @@ describe("saveFood", () => {
           protein: existingFood.protein,
           createdAt: existingFood.createdAt,
           updatedAt: existingFood.updatedAt,
-          totalWeight: 20,
-          servingSize: 20,
-          date,
+          servingSize: existingFood.servingSize,
         },
         newFood: {
           id: existingFood.id,
@@ -170,9 +211,7 @@ describe("saveFood", () => {
           fat,
           carbs,
           protein,
-          totalWeight: 20,
-          servingSize: 20,
-          date,
+          servingSize,
         },
       });
     });

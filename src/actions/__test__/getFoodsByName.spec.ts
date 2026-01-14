@@ -11,11 +11,7 @@ describe("getFoodsByName", () => {
     ]);
 
     const retrieved = await getFoodsByName("ham");
-    const expected = [
-      foods[2].dataValues,
-      foods[1].dataValues,
-      foods[0].dataValues,
-    ];
+    const expected = [foods[2], foods[1], foods[0]];
 
     expect(retrieved).toEqual(expected);
   });
