@@ -36,7 +36,7 @@ export default function TotalPerServing({
   return (
     <div className="flex flex-col items-center w-full">
       <div className="flex flex-col items-center gap-3 w-full">
-        <div className="flex justify-between w-full">
+        <div className="flex justify-between gap-3">
           <label htmlFor="num-servings" className="sr-only">
             Number of Servings:
           </label>
@@ -69,7 +69,7 @@ export default function TotalPerServing({
         <h2 className="text-lg font-bold mb-2">
           Total Per Serving (for {numServings} servings):
         </h2>
-        <div className="flex flex-row gap-1">
+        <div className="flex flex-row gap-1 w-full justify-between">
           <div>Calories: {perServing.calories.toFixed(2)}</div>
           <div>Fat: {perServing.fat.toFixed(2)}g</div>
           <div>Carbs: {perServing.carbs.toFixed(2)}g</div>

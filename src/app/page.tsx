@@ -6,10 +6,10 @@ export default async function Home() {
   const foods = await getFoods();
 
   return (
-    <div className="flex flex-col p-4 w-full gap-2 h-screen">
+    <div className="flex flex-col items-center p-4 w-full gap-2 h-screen">
       <h1 className="text-3xl font-bold">Food Calculator</h1>
-      <div className="flex flex-col items-center gap-2 grow">
-        <div className="flex">
+      <div className="flex flex-col items-center gap-2 grow w-full">
+        <div className="flex w-full max-w-5xl flex-col justify-center">
           <TotalPerServing foods={foods} />
         </div>
         <FoodItems foods={foods} />
