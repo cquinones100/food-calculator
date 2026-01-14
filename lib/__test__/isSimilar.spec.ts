@@ -17,8 +17,8 @@ describe("isSimilar", () => {
       isSimilar(
         "food i love it really yum yummy",
         "food it really yum",
-        threshold,
-      ),
+        threshold
+      )
     ).toBe(false);
   });
 

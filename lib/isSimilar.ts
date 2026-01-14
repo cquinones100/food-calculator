@@ -1,5 +1,5 @@
 export function isSimilar(base: string, comparison: string, threshold = 0.4) {
-  return similarityScore(base, comparison) > threshold;
+  return similarityScore(base, comparison) >= threshold;
 }
 
 export function similarityScore(base: string, comparison: string) {
@@ -9,7 +9,7 @@ export function similarityScore(base: string, comparison: string) {
   const stringTwoSplit = comparison
     .split(" ")
     .map((word) => word.toLocaleLowerCase());
-  const numWords = stringOneSplit.length;
+  const numWords = Math.max(stringOneSplit.length, stringTwoSplit.length);
 
   const stringOneSet = new Set(stringOneSplit);
 
