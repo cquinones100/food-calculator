@@ -1,24 +1,25 @@
-import { Food } from "@/models/food";
-import { InferAttributes } from "sequelize";
+import initializeDb, { Food, NewFood } from "@/database";
 import { Factory } from "fishery";
 
-type FoodType = InferAttributes<Food>;
+export const foodFactory = Factory.define<Food | NewFood>(
+  ({ sequence, onCreate }) => {
+    const food: NewFood = {
+      name: `food-${sequence}`,
+      calories: 100,
+      fat: 10,
+      carbs: 5,
+      protein: 5,
+      servingSize: 100,
+    };
 
-export const foodFactory = Factory.define<Food>(({ sequence, onCreate }) => {
-  const attributes: FoodType = {
-    name: `food-${sequence}`,
-    calories: 100,
-    fat: 10,
-    carbs: 5,
-    protein: 5,
-    servingSize: 100,
-  };
+    onCreate(async () => {
+      const db = await initializeDb();
 
-  const food = Food.build(attributes);
+      await db.insertInto("Foods").values(food).execute();
 
-  onCreate(async () => {
-    return await food.save();
-  });
+      return food;
+    });
 
-  return food;
-});
+    return food;
+  }
+);

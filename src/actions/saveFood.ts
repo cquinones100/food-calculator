@@ -1,8 +1,6 @@
 "use server";
 
-import { Food } from "@/models/food";
-import { InferAttributes } from "sequelize";
-import initializeDb from "@/database";
+import initializeDb, { Food, NewFood } from "@/database";
 import { isSimilar, similarityScore } from "../../lib/isSimilar";
 
 class FoodIsSimilarError extends Error {}
@@ -16,25 +14,27 @@ class FoodAlreadyExistsError extends Error {
 }
 
 async function saveFood(
-  { name, calories, fat, carbs, protein, servingSize }: InferAttributes<Food>,
+  { name, calories, fat, carbs, protein, servingSize }: NewFood,
   { forceSimilarity = false } = {}
 ) {
   const db = await initializeDb();
-  const transaction = await db.transaction();
 
-  const allNames = (
-    await Food.findAll({
-      attributes: ["name"],
-    })
-  ).map(({ dataValues: { name } }) => name);
+  const allNames = (await db.selectFrom("Foods").select("name").execute()).map(
+    ({ name }) => name
+  );
 
-  let similarities = [];
+  let similarities: string[] = [];
 
   try {
-    const existingFood = await Food.findOne({ where: { name } });
+    const existingFood = await db
+      .selectFrom("Foods")
+      .where("name", "in", allNames)
+      .selectAll()
+      .limit(1)
+      .execute();
 
     if (existingFood) {
-      throw new FoodAlreadyExistsError(existingFood);
+      throw new FoodAlreadyExistsError(existingFood[0]);
     }
 
     if (!forceSimilarity) {
@@ -56,24 +56,18 @@ async function saveFood(
       throw new FoodIsSimilarError();
     }
 
-    await Food.create(
-      {
+    await db
+      .insertInto("Foods")
+      .values({
         name,
         calories,
         fat,
         carbs,
         protein,
         servingSize,
-      },
-      {
-        fields: ["name", "calories", "carbs", "fat", "protein"],
-        transaction,
-      }
-    );
-
-    transaction.commit();
+      })
+      .execute();
   } catch (e) {
-    await transaction.rollback();
     if (e instanceof FoodIsSimilarError) {
       return {
         error: true,
@@ -86,9 +80,9 @@ async function saveFood(
       return {
         error: true,
         message: e.message,
-        existingFood: { ...e.food.dataValues },
+        existingFood: { ...e.food },
         newFood: {
-          ...e.food.dataValues,
+          ...e.food,
           calories,
           fat,
           carbs,

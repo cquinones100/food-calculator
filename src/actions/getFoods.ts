@@ -1,13 +1,12 @@
 "use server";
 
 import initializeDb from "@/database";
-import { Food } from "@/models/food";
 
 async function getFoods() {
-  await initializeDb();
-  const foods = await Food.findAll();
+  const db = await initializeDb();
+  const foods = db.selectFrom("Foods").selectAll().execute();
 
-  return foods.map(({ dataValues }) => dataValues);
+  return foods;
 }
 
 export default getFoods;
