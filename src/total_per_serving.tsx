@@ -1,15 +1,11 @@
 "use client";
 
-import React, { useMemo } from "react";
-import { Food } from "./models/food";
-import { InferAttributes } from "sequelize";
-import { ServingAttributes } from "./app/ingredients/new/form";
+import React, { use, useMemo } from "react";
+import { IngredientsContext } from "./app/IngredientsContext";
 
-export default function TotalPerServing({
-  foods,
-}: {
-  foods: (InferAttributes<Food> & ServingAttributes)[];
-}) {
+export default function TotalPerServing() {
+  const { ingredients } = use(IngredientsContext);
+
   const [numServings, setNumServings] = React.useState<number | "">("");
 
   const perServing = useMemo(() => {
@@ -19,7 +15,7 @@ export default function TotalPerServing({
       return defaultValues;
     }
 
-    return foods.reduce((acc, food) => {
+    return ingredients.reduce((acc, food) => {
       acc.calories +=
         (food.calories / food.servingSize) * (food.totalWeight / numServings);
       acc.fat +=
@@ -31,7 +27,7 @@ export default function TotalPerServing({
 
       return acc;
     }, defaultValues);
-  }, [foods, numServings]);
+  }, [ingredients, numServings]);
 
   return (
     <div className="flex flex-col items-center w-full">
