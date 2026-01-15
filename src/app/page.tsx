@@ -8,10 +8,10 @@ export default async function Home() {
       <h1 className="text-3xl font-bold">Food Calculator</h1>
       <div className="flex flex-col items-center gap-2 grow w-full">
         <IngredientsContextProvider>
-          <div className="flex w-full max-w-5xl flex-col justify-center">
+          <div className="flex w-full max-w-5xl flex-col justify-center gap-2">
             <TotalPerServing />
+            <FoodItems />
           </div>
-          <FoodItems />
         </IngredientsContextProvider>
       </div>
     </div>

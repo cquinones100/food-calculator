@@ -51,14 +51,6 @@ export default function TotalPerServing() {
             }}
             min="1"
           />
-          <a href="/ingredients/new">
-            <button
-              value="Add Food"
-              className="bg-blue-500 text-white p-2 rounded"
-            >
-              Add Food
-            </button>
-          </a>
         </div>
       </div>
       <div className="border p-2 rounded w-full mt-4 gap-2">

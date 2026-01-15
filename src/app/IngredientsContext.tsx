@@ -1,6 +1,6 @@
 "use client";
 
-import { Food } from "@/database";
+import { NewFood } from "@/database";
 import {
   createContext,
   Dispatch,
@@ -10,7 +10,7 @@ import {
 } from "react";
 import { ServingAttributes } from "./ingredients/new/form";
 
-export type Ingredient = Food & ServingAttributes;
+export type Ingredient = NewFood & ServingAttributes;
 
 type IngredientsContextType = {
   ingredients: Ingredient[];

@@ -1,7 +1,8 @@
 "use client";
 
-import { use } from "react";
+import { use, useState } from "react";
 import { Ingredient, IngredientsContext } from "./app/IngredientsContext";
+import Form from "./app/ingredients/new/form";
 
 function FoodItem({ ingredient }: { ingredient: Ingredient }) {
   return (
@@ -30,16 +31,13 @@ function FoodItem({ ingredient }: { ingredient: Ingredient }) {
 export default function FoodItems() {
   const { ingredients } = use(IngredientsContext);
 
-  if (!ingredients || ingredients.length === 0) {
-    return <p className="mb-4">No foods added yet.</p>;
-  }
-
   return (
     <div className="flex flex-col items-center gap-2 w-full">
       <div className="flex w-full items-end justify-end"></div>
       {ingredients.map((ingredient, index) => (
         <FoodItem key={index} ingredient={ingredient} />
       ))}
+      <Form />
     </div>
   );
 }
