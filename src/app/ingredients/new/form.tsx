@@ -12,12 +12,38 @@ import Input from "@/input";
 import SimilarNamesModal from "./similarNamesModal";
 import ExistingFoodModal from "./existingFoodModal";
 import { Ingredient } from "@/app/IngredientsContext";
+import getFoodsByName from "@/actions/getFoodsByName";
+import { Food } from "@/database";
+
+function SimilarFood({ food }: { food: Food }) {
+  return (
+    <div className="border p-2 rounded mb-2 flex justify-between cursor-pointer">
+      <div className="flex flex-col">
+        <div className="flex justify-end"></div>
+        <div className="flex gap-2 justify-between flex-wrap items-center">
+          <div className="font-bold text-xl flex-1">{food.name}</div>
+        </div>
+        <div className="flex gap-2 flex-wrap">
+          <div>Serving Size: {food.servingSize}g</div>
+          <div>Calories: {food.calories}</div>
+          <div>Fat: {food.fat}g</div>
+          <div>Carbs: {food.carbs}g</div>
+          <div>Protein: {food.protein}g</div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export type ServingAttributes = {
   totalWeight: number;
 };
 
-export default function Form() {
+export default function Form({
+  onFoodSubmit,
+}: {
+  onFoodSubmit: (food: Ingredient) => void;
+}) {
   const initialState = {
     similarities: [],
   };
@@ -81,6 +107,16 @@ export default function Form() {
       }
     }
 
+    setServingAttributes({ totalWeight: 0 });
+    setPendingFood({
+      name: "",
+      calories: 0,
+      carbs: 0,
+      fat: 0,
+      protein: 0,
+      servingSize: 0,
+      totalWeight: 0,
+    });
     return initialState;
   }
 
@@ -123,6 +159,12 @@ export default function Form() {
     alert("We will update existing now");
   }
 
+  const [similarFoods, setSimilarFoods] = useState<Food[]>([]);
+
+  async function findSimilarFood(name: string) {
+    setSimilarFoods(await getFoodsByName(name));
+  }
+
   return (
     <>
       <ExistingFoodModal
@@ -146,8 +188,9 @@ export default function Form() {
             id="food-name"
             type="text"
             value={pendingFood.name}
-            onChange={(e) => {
+            onChange={async (e) => {
               setPendingFood({ ...pendingFood, name: e.target.value });
+              await findSimilarFood(e.target.value);
             }}
             w="full"
           />
@@ -219,12 +262,15 @@ export default function Form() {
             }}
           />
         </div>
+        {similarFoods.map((food) => {
+          return <SimilarFood food={food} key={food.id} />;
+        })}
         <div className="flex w-full justify-end">
           <input
             disabled={isPending}
             type="submit"
             value="Add Food"
-            className="bg-blue-500 text-white p-2 rounded w-1/3"
+            className="bg-blue-500 text-white p-2 rounded w-1/3 cursor-pointer"
           />
         </div>
       </form>
