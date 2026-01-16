@@ -2,7 +2,7 @@
 
 import { use } from "react";
 import { Ingredient, IngredientsContext } from "./app/IngredientsContext";
-import Form from "./app/ingredients/new/form";
+import Form from "@/app/form";
 
 function FoodItem({
   ingredient,
