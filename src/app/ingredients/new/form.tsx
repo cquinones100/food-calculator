@@ -223,6 +223,8 @@ export default function Form({
                 totalWeight: Number(e.target.value),
               });
             }}
+            required
+            min={1}
           />
           <Input
             label="Serving Size (g)"
@@ -235,6 +237,8 @@ export default function Form({
                 servingSize: Number(e.target.value),
               });
             }}
+            required
+            min={1}
           />
           <Input
             label="Calories"
@@ -247,6 +251,8 @@ export default function Form({
                 calories: Number(e.target.value),
               });
             }}
+            required
+            min={1}
           />
           <Input
             label="Fat (g)"
@@ -256,6 +262,8 @@ export default function Form({
             onChange={(e) => {
               setPendingFood({ ...pendingFood, fat: Number(e.target.value) });
             }}
+            required
+            min={1}
           />
           <Input
             label="Carbs (g)"
@@ -265,6 +273,8 @@ export default function Form({
             onChange={(e) => {
               setPendingFood({ ...pendingFood, carbs: Number(e.target.value) });
             }}
+            required
+            min={1}
           />
           <Input
             label="Protein (g)"
@@ -277,6 +287,8 @@ export default function Form({
                 protein: Number(e.target.value),
               });
             }}
+            required
+            min={1}
           />
         </div>
         {similarFoods.map((food) => {

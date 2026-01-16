@@ -7,6 +7,8 @@ export default function Input({
   value,
   onChange,
   w = undefined,
+  required = false,
+  min,
 }: {
   label: string;
   id: string;
@@ -14,8 +16,13 @@ export default function Input({
   value: string | number;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   w?: string;
+  required?: boolean;
+  min?: number;
 }) {
   const width = w ? `w-${w}` : "max-w-[150px]";
+
+  const requiredProps = required ? { required } : {};
+  const minProps = min ? { min } : {};
   return (
     <div className={`flex flex-col ${width}`}>
       <label htmlFor={id}>{label}</label>
@@ -27,6 +34,8 @@ export default function Input({
         name={id}
         value={value}
         onChange={onChange}
+        {...requiredProps}
+        {...minProps}
       />
     </div>
   );
