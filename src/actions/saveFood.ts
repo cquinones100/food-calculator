@@ -19,9 +19,6 @@ async function saveFood(
 ) {
   const db = await initializeDb();
 
-  const allNames = (await db.selectFrom("Foods").select("name").execute()).map(
-    ({ name }) => name
-  );
 
   let similarities: string[] = [];
 

@@ -13,7 +13,7 @@ export default function Input({
   label: string;
   id: string;
   type: "text" | "number";
-  value: string | number;
+  value: string | number | undefined;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   w?: string;
   required?: boolean;
@@ -32,7 +32,7 @@ export default function Input({
         className="border p-2 rounded"
         id={id}
         name={id}
-        value={value}
+        value={value || ""}
         onChange={onChange}
         {...requiredProps}
         {...minProps}

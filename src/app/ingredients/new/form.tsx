@@ -64,15 +64,7 @@ export default function Form({
     }
   );
 
-  const [pendingFood, setPendingFood] = useState<Ingredient>({
-    name: "",
-    calories: 0,
-    carbs: 0,
-    fat: 0,
-    protein: 0,
-    servingSize: 0,
-    totalWeight: 0,
-  });
+  const [pendingFood, setPendingFood] = useState<Partial<Ingredient>>({});
 
   async function onSubmit(
     _previousState: { similarities: string[] },
@@ -81,6 +73,18 @@ export default function Form({
     let name = formData.get("food-name");
 
     const { calories, carbs, fat, protein, servingSize } = pendingFood;
+
+    if (
+      !pendingFood.name ||
+      !calories ||
+      !carbs ||
+      !fat ||
+      !protein ||
+      !servingSize
+    ) {
+      return initialState;
+    }
+
     name = name ? String(name) : pendingFood.name;
     const forceSimilarity = formData.get("force-similarity") === "true";
 
@@ -118,15 +122,7 @@ export default function Form({
     }
 
     setServingAttributes({ totalWeight: 0 });
-    setPendingFood({
-      name: "",
-      calories: 0,
-      carbs: 0,
-      fat: 0,
-      protein: 0,
-      servingSize: 0,
-      totalWeight: 0,
-    });
+    setPendingFood({});
     return initialState;
   }
 
