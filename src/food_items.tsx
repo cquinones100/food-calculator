@@ -29,7 +29,11 @@ function FoodItem({ ingredient }: { ingredient: Ingredient }) {
 }
 
 export default function FoodItems() {
-  const { ingredients } = use(IngredientsContext);
+  const { ingredients, setIngredients } = use(IngredientsContext);
+
+  function onFoodSubmit(food: Ingredient) {
+    setIngredients([...ingredients, food]);
+  }
 
   return (
     <div className="flex flex-col items-center gap-2 w-full">
@@ -37,7 +41,7 @@ export default function FoodItems() {
       {ingredients.map((ingredient, index) => (
         <FoodItem key={index} ingredient={ingredient} />
       ))}
-      <Form />
+      <Form onFoodSubmit={onFoodSubmit} />
     </div>
   );
 }

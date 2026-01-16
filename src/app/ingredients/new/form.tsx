@@ -15,15 +15,25 @@ import { Ingredient } from "@/app/IngredientsContext";
 import getFoodsByName from "@/actions/getFoodsByName";
 import { Food } from "@/database";
 
-function SimilarFood({ food }: { food: Food }) {
+function SimilarFood({
+  food,
+  onSimilarFoodClick,
+}: {
+  food: Food;
+  onSimilarFoodClick: (e: FormEvent) => void;
+}) {
   return (
-    <div className="border p-2 rounded mb-2 flex justify-between cursor-pointer">
-      <div className="flex flex-col">
-        <div className="flex justify-end"></div>
+    <button
+      className="border p-2 px-4 rounded mb-2 flex justify-between cursor-pointer"
+      onClick={onSimilarFoodClick}
+    >
+      <div className="flex flex-col w-full">
         <div className="flex gap-2 justify-between flex-wrap items-center">
-          <div className="font-bold text-xl flex-1">{food.name}</div>
+          <div className="font-bold text-xl flex flex-1 justify-start">
+            {food.name}
+          </div>
         </div>
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-2 flex-wrap justify-between">
           <div>Serving Size: {food.servingSize}g</div>
           <div>Calories: {food.calories}</div>
           <div>Fat: {food.fat}g</div>
@@ -31,7 +41,7 @@ function SimilarFood({ food }: { food: Food }) {
           <div>Protein: {food.protein}g</div>
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -165,6 +175,13 @@ export default function Form({
     setSimilarFoods(await getFoodsByName(name));
   }
 
+  function onSimilarFoodClick(food: Food) {
+    setPendingFood({
+      ...food,
+      totalWeight: 0,
+    });
+  }
+
   return (
     <>
       <ExistingFoodModal
@@ -263,7 +280,18 @@ export default function Form({
           />
         </div>
         {similarFoods.map((food) => {
-          return <SimilarFood food={food} key={food.id} />;
+          return (
+            <SimilarFood
+              food={food}
+              key={food.id}
+              onSimilarFoodClick={(e: FormEvent) => {
+                e.preventDefault();
+
+                onSimilarFoodClick(food);
+                setSimilarFoods([]);
+              }}
+            />
+          );
         })}
         <div className="flex w-full justify-end">
           <input
