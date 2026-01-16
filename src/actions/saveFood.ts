@@ -1,9 +1,7 @@
 "use server";
 
 import initializeDb, { Food, NewFood } from "@/database";
-import { isSimilar, similarityScore } from "../../lib/isSimilar";
 
-class FoodIsSimilarError extends Error {}
 class FoodAlreadyExistsError extends Error {
   food: Food;
 
@@ -13,12 +11,10 @@ class FoodAlreadyExistsError extends Error {
   }
 }
 
-async function saveFood(
-  { name, calories, fat, carbs, protein, servingSize }: NewFood,
-  { forceSimilarity = false } = {}
-) {
+async function saveFood(newFood: NewFood) {
   const db = await initializeDb();
 
+  const { name, calories, fat, carbs, protein, servingSize } = newFood;
 
   let similarities: string[] = [];
 
@@ -33,26 +29,15 @@ async function saveFood(
     )[0];
 
     if (existingFood) {
-      throw new FoodAlreadyExistsError(existingFood);
-    }
-
-    if (!forceSimilarity) {
-      for (const otherName of allNames) {
-        if (isSimilar(name, otherName)) {
-          similarities.push(otherName);
-        }
+      if (
+        calories === existingFood.calories &&
+        fat === existingFood.fat &&
+        carbs === existingFood.carbs &&
+        protein === existingFood.protein &&
+        servingSize === existingFood.servingSize
+      ) {
+        throw new FoodAlreadyExistsError(existingFood);
       }
-    }
-
-    if (similarities.length > 0) {
-      similarities = similarities.sort((a, b) => {
-        const aSimilarityScore = similarityScore(name, a);
-        const bSimilarityScore = similarityScore(name, b);
-
-        return bSimilarityScore - aSimilarityScore;
-      });
-
-      throw new FoodIsSimilarError();
     }
 
     await db
@@ -67,14 +52,6 @@ async function saveFood(
       })
       .execute();
   } catch (e) {
-    if (e instanceof FoodIsSimilarError) {
-      return {
-        error: true,
-        message: "Food name is similar to one that exists",
-        similarities,
-      };
-    }
-
     if (e instanceof FoodAlreadyExistsError) {
       return {
         error: true,

@@ -8,7 +8,7 @@ export default async function createFoods() {
     .createTable("Foods")
     .ifNotExists()
     .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
-    .addColumn("name", "text", (col) => col.notNull().unique())
+    .addColumn("name", "text", (col) => col.notNull())
     .addColumn("calories", "real", (col) => col.notNull())
     .addColumn("fat", "real", (col) => col.notNull())
     .addColumn("carbs", "real", (col) => col.notNull())

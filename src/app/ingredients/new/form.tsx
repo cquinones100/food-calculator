@@ -86,26 +86,20 @@ export default function Form({
     }
 
     name = name ? String(name) : pendingFood.name;
-    const forceSimilarity = formData.get("force-similarity") === "true";
 
     setPendingFood({
       ...pendingFood,
       name,
     });
 
-    const res = await saveFood(
-      {
-        name,
-        calories,
-        carbs,
-        fat,
-        protein,
-        servingSize,
-      },
-      {
-        forceSimilarity,
-      }
-    );
+    const res = await saveFood({
+      name,
+      calories,
+      carbs,
+      fat,
+      protein,
+      servingSize,
+    });
 
     if (res?.error) {
       if (res.similarities) {
