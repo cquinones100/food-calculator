@@ -9,11 +9,22 @@ import {
   useState,
 } from "react";
 import Input from "@/input";
-import SimilarNamesModal from "./similarNamesModal";
-import ExistingFoodModal from "./existingFoodModal";
 import { Ingredient } from "@/app/IngredientsContext";
 import getFoodsByName from "@/actions/getFoodsByName";
 import { Food } from "@/database";
+
+function isValidFood(
+  pendingFood: Partial<Ingredient>
+): pendingFood is Ingredient {
+  return !!(
+    pendingFood.name &&
+    pendingFood.calories &&
+    pendingFood.carbs &&
+    pendingFood.fat &&
+    pendingFood.protein &&
+    pendingFood.servingSize
+  );
+}
 
 function SimilarFood({
   food,
@@ -66,57 +77,34 @@ export default function Form({
 
   const [pendingFood, setPendingFood] = useState<Partial<Ingredient>>({});
 
-  async function onSubmit(
-    _previousState: { similarities: string[] },
-    formData: FormData
-  ) {
-    let name = formData.get("food-name");
+  async function onSubmit(_previousState: { similarities: string[] }) {
+    if (isValidFood(pendingFood)) {
+      setPendingFood({
+        ...pendingFood,
+      });
 
-    const { calories, carbs, fat, protein, servingSize } = pendingFood;
+      const { name, calories, carbs, fat, protein, servingSize } = pendingFood;
+      const res = await saveFood({
+        name,
+        calories,
+        carbs,
+        fat,
+        protein,
+        servingSize,
+      });
 
-    if (
-      !pendingFood.name ||
-      !calories ||
-      !carbs ||
-      !fat ||
-      !protein ||
-      !servingSize
-    ) {
-      return initialState;
-    }
-
-    name = name ? String(name) : pendingFood.name;
-
-    setPendingFood({
-      ...pendingFood,
-      name,
-    });
-
-    const res = await saveFood({
-      name,
-      calories,
-      carbs,
-      fat,
-      protein,
-      servingSize,
-    });
-
-    if (res?.error) {
-      if (res.similarities) {
-        return {
-          similarities: res.similarities || [],
-        };
-      } else if (res.existingFood) {
-        return {
-          newFood: res.newFood,
-          existingFood: res.existingFood,
-          similarities: res.similarities || [],
-        };
+      if (res?.error) {
+        throw res.message;
       }
+
+      onFoodSubmit({
+        ...pendingFood,
+        ...servingAttributes,
+      });
+      setServingAttributes({ totalWeight: 0 });
+      setPendingFood({});
     }
 
-    setServingAttributes({ totalWeight: 0 });
-    setPendingFood({});
     return initialState;
   }
 
@@ -125,39 +113,12 @@ export default function Form({
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const formData = new FormData();
-
     startTransition(() => {
-      formAction(formData);
+      formAction();
     });
   }
 
   const formRef = useRef<HTMLFormElement>(null);
-
-  function handleContinue() {
-    const formData = new FormData();
-
-    formData.append("forceSimilarity", "true");
-
-    startTransition(() => {
-      formAction(formData);
-    });
-  }
-
-  function handleSelect(name: string) {
-    const formData = new FormData();
-
-    formData.append("food-name", name);
-    formData.append("force-similarity", "true");
-
-    startTransition(() => {
-      formAction(formData);
-    });
-  }
-
-  function handleUpdateExisting() {
-    alert("We will update existing now");
-  }
 
   const [similarFoods, setSimilarFoods] = useState<Food[]>([]);
 
@@ -174,16 +135,6 @@ export default function Form({
 
   return (
     <>
-      <ExistingFoodModal
-        food={state.existingFood}
-        newFood={state.newFood}
-        onClickNew={handleUpdateExisting}
-      />
-      <SimilarNamesModal
-        similarities={state.similarities}
-        onContinue={handleContinue}
-        onSelect={handleSelect}
-      />
       <form
         ref={formRef}
         onSubmit={handleSubmit}

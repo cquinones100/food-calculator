@@ -1,15 +1,6 @@
 "use server";
 
-import initializeDb, { Food, NewFood } from "@/database";
-
-class FoodAlreadyExistsError extends Error {
-  food: Food;
-
-  constructor(food: Food) {
-    super("Food already exists");
-    this.food = food;
-  }
-}
+import initializeDb, { NewFood } from "@/database";
 
 async function saveFood(newFood: NewFood) {
   const db = await initializeDb();
@@ -36,7 +27,7 @@ async function saveFood(newFood: NewFood) {
         protein === existingFood.protein &&
         servingSize === existingFood.servingSize
       ) {
-        throw new FoodAlreadyExistsError(existingFood);
+        return;
       }
     }
 
@@ -52,21 +43,6 @@ async function saveFood(newFood: NewFood) {
       })
       .execute();
   } catch (e) {
-    if (e instanceof FoodAlreadyExistsError) {
-      return {
-        error: true,
-        message: e.message,
-        existingFood: { ...e.food },
-        newFood: {
-          ...e.food,
-          calories,
-          fat,
-          carbs,
-          protein,
-        },
-      };
-    }
-
     if (e instanceof Error) {
       let message = e.message;
 
