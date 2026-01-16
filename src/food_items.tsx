@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use } from "react";
 import { Ingredient, IngredientsContext } from "./app/IngredientsContext";
 import Form from "./app/ingredients/new/form";
 
